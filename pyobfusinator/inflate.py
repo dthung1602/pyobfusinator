@@ -2,10 +2,7 @@ from string import printable
 
 from .exception import UnknownCharacterException
 
-__all__ = [
-    "inflate",
-    "deflate"
-]
+__all__ = ["inflate", "deflate"]
 
 
 def inflate(input_code: str) -> str:
@@ -36,8 +33,10 @@ def deflate(output_code: str) -> str:
 
     boilerplate = generate_boilerplate() + "exec("
     if not (output_code.startswith(boilerplate) and output_code.endswith(")\n")):
-        raise ValueError("This code was not obfuscated by pyobfusinator. Cannot deflate.")
-    output_code = output_code[len(boilerplate):-2]
+        raise ValueError(
+            "This code was not obfuscated by pyobfusinator. Cannot deflate."
+        )
+    output_code = output_code[len(boilerplate) : -2]
 
     expressions = split_expression(output_code)
     chars = [expr_to_char(e) for e in expressions]
@@ -65,10 +64,23 @@ def split_expression(s: str) -> list[str]:
 
 
 SHORT_MAPPING = {
-    'l': 'str(str)[2]', 'o': 'str(eval)[16]', 'c': 'str(str)[1]', 'a': 'str(str)[3]',
-    's': 'str(str)[4]', 'i': 'str(eval)[3]', 'e': 'str(eval)[19]', 'b': 'str(eval)[1]',
-    't': 'str(eval)[5]', 'f': 'str(eval)[10]', 'n': 'str(eval)[8]', 'r': 'str(str)[10]',
-    '(': 'str(())[0]', ')': 'str(())[1]', ' ': 'str(str)[6]', '[': 'str([])[0]', ']': 'str([])[1]'
+    "l": "str(str)[2]",
+    "o": "str(eval)[16]",
+    "c": "str(str)[1]",
+    "a": "str(str)[3]",
+    "s": "str(str)[4]",
+    "i": "str(eval)[3]",
+    "e": "str(eval)[19]",
+    "b": "str(eval)[1]",
+    "t": "str(eval)[5]",
+    "f": "str(eval)[10]",
+    "n": "str(eval)[8]",
+    "r": "str(str)[10]",
+    "(": "str(())[0]",
+    ")": "str(())[1]",
+    " ": "str(str)[6]",
+    "[": "str([])[0]",
+    "]": "str([])[1]",
 }
 
 REVERSE_SHORT_MAPPING = {v: k for k, v in SHORT_MAPPING.items()}
@@ -81,15 +93,17 @@ def generate_boilerplate():
     These characters can be extracted from str(locals())
     """
 
-    return "exec(str(eval)[10]+str(str)[10]+str(eval)[16]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[" \
-           "3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(str)[6]+str(str)[4]+str(eval)[5]+str(str)[" \
-           "10]+str(eval)[3]+str(eval)[8]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str(" \
-           "str)[4]+str(())[0]+str(())[1]))[50]+str(str)[6]+str(eval)[3]+str(eval(str(str)[2]+str(eval)[16]+str(str)[" \
-           "1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(eval(str(str)[2]+str(eval)[16]+str(" \
-           "str)[1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[45]+str(eval)[16]+str(str)[10]+str(" \
-           "eval)[5]+str(str)[6]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str(str)[" \
-           "4]+str(())[0]+str(())[1]))[45]+str(str)[10]+str(eval)[3]+str(eval)[8]+str(eval)[5]+str(str)[3]+str(eval)[" \
-           "1]+str(str)[2]+str(eval)[19]+str(str)[6]+str(str)[3]+str(str)[4]+str(str)[6]+str(eval)[1])\n"
+    return (
+        "exec(str(eval)[10]+str(str)[10]+str(eval)[16]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)["
+        "3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(str)[6]+str(str)[4]+str(eval)[5]+str(str)["
+        "10]+str(eval)[3]+str(eval)[8]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str("
+        "str)[4]+str(())[0]+str(())[1]))[50]+str(str)[6]+str(eval)[3]+str(eval(str(str)[2]+str(eval)[16]+str(str)["
+        "1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(eval(str(str)[2]+str(eval)[16]+str("
+        "str)[1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[45]+str(eval)[16]+str(str)[10]+str("
+        "eval)[5]+str(str)[6]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str(str)["
+        "4]+str(())[0]+str(())[1]))[45]+str(str)[10]+str(eval)[3]+str(eval)[8]+str(eval)[5]+str(str)[3]+str(eval)["
+        "1]+str(str)[2]+str(eval)[19]+str(str)[6]+str(str)[3]+str(str)[4]+str(str)[6]+str(eval)[1])\n"
+    )
 
 
 CHAR_FORMAT_PREFIX = "eval(str(eval)[1]+str([])[0]+str("
@@ -110,9 +124,14 @@ def expr_to_char(expression: str) -> str:
         return REVERSE_SHORT_MAPPING[expression]
 
     try:
-        if not (expression.startswith(CHAR_FORMAT_PREFIX) and expression.endswith(CHAR_FORMAT_SUFFIX)):
+        if not (
+            expression.startswith(CHAR_FORMAT_PREFIX)
+            and expression.endswith(CHAR_FORMAT_SUFFIX)
+        ):
             raise
-        idx = expression.removeprefix(CHAR_FORMAT_PREFIX).removesuffix(CHAR_FORMAT_SUFFIX)
+        idx = expression.removeprefix(CHAR_FORMAT_PREFIX).removesuffix(
+            CHAR_FORMAT_SUFFIX
+        )
         return printable[int(idx)]
     except Exception:
         raise ValueError(f"Cannot decompile expression '{expression}'")

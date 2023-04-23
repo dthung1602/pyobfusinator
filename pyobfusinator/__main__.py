@@ -8,14 +8,41 @@ from .inflate import inflate
 def main():
     parser = ArgumentParser(
         prog="PyObfusinator",
-        description="Obfuscate python code in weird ways. This is just a fun code golf, not a proper obfuscator"
+        description="Obfuscate python code in weird ways. This is just a fun code golf, not a proper obfuscator",
     )
-    parser.add_argument("-i", "--input", required=False, help="Input file. Leave empty to read from stdin")
-    parser.add_argument("-o", "--output", required=False, help="Output file. Leave empty to write to stdout")
-    parser.add_argument("-v", "--verbose", required=False, action="store_true", default=False, help="Print extra info")
+    parser.add_argument(
+        "-i",
+        "--input",
+        required=False,
+        help="Input file. Leave empty to read from stdin",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        required=False,
+        help="Output file. Leave empty to write to stdout",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        required=False,
+        action="store_true",
+        default=False,
+        help="Print extra info",
+    )
     action = parser.add_mutually_exclusive_group(required=True)
-    action.add_argument("-f", "--inflate", action="store_true", help="Make the code inflated by using only exec, eval, str, and all")
-    action.add_argument("-c", "--compress", action="store_true", help="Compress the code with unicode magic")
+    action.add_argument(
+        "-f",
+        "--inflate",
+        action="store_true",
+        help="Make the code inflated by using only exec, eval, str, and all",
+    )
+    action.add_argument(
+        "-c",
+        "--compress",
+        action="store_true",
+        help="Compress the code with unicode magic",
+    )
     args = parser.parse_args()
 
     in_file = open(args.input) if args.input else sys.stdin
@@ -75,5 +102,5 @@ def print_percentage(before: int, after: int, unit: str):
         print(f"Decreased             : {round(100 - after / before * 100, 2)}%")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
