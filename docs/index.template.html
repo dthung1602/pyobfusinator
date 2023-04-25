@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Primary Meta Tags -->
+    <meta charset="UTF-8">
+    <title>SQSS - Structured Query Style Sheet</title>
+    <meta name="title" content="SQSS - Structured Query Style Sheet">
+    <meta name="description" content="Style your HTML with some good old SQL!">
+    <meta name="author" content="dthung1602">
+    <meta name="keywords" content="sql, css, transpiler, sqss, style, html">
+    <meta name="robots" content="index, follow"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dthung1602.github.io/sqss/">
+    <meta property="og:title" content="SQSS - Structured Query Style Sheet">
+    <meta property="og:description" content="Style your HTML with some good old SQL!">
+    <meta property="og:image" content="img/logo-social.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://dthung1602.github.io/sqss/">
+    <meta property="twitter:title" content="SQSS - Structured Query Style Sheet">
+    <meta property="twitter:description" content="Style your HTML with some good old SQL!">
+    <meta property="twitter:image" content="img/logo-social.png">
+
+    <!--  Stylesheets & js  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./normalize.css">
+    <link rel="stylesheet" href="./skeleton.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.0/ace.js"
+            integrity="sha512-7s3F2rOCm3IxjF8NjYsmlhE8gNOiaj2i9Uq6MZch73ApkLH2/iuoB7q3Z4NFiS8GTmRhyHKSKulosEgwDZf2Iw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.1/full/pyodide.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+<a id="icon-github" href="https://github.com/dthung1602/pyobfusinator"></a>
+
+<main class="container">
+
+    <div class="header">
+        <h1>PyObfusinator</h1>
+        <h4>A Python obfuscator code golf</h4>
+    </div>
+
+    <div>
+        <label for="input-code">Python code</label>
+        <div id="input-code" class="u-full-width">print("Hello World")
+        </div>
+    </div>
+    <div id="method-selector">
+        <label>
+            <span>Obfuscation method</span>
+            <input type="radio" name="method" id="inflate-method" value="inflate" checked>
+            <span class="label-body">Inflate</span>
+            <input type="radio" name="method" id="compress-method" value="compress">
+            <span class="label-body">Compress</span>
+
+            <button id="go" class="button-primary">Go!</button>
+            <button id="copy">Copy output</button>
+        </label>
+    </div>
+    <div>
+        <label for="output-code">Obfuscated code</label>
+        <div id="output-code" class="u-full-width"></div>
+    </div>
+
+    <div id="loading">
+        <img class="swing" src="python-logo.png" alt="">
+        <h5><i>Loading ...</i></h5>
+    </div>
+
+    <details id="explanation">
+        <summary><h4>How does it work?</h4></summary>
+
+        <p><b>Compression</b></p>
+
+        <p>"Compress" the code with unicode zalgo magic</p>
+        <p>Idea and implementation from
+            <a href="https://www.reddit.com/r/ProgrammerHumor/comments/yqof9f/comment/ivrd9ur/?utm_source=share&utm_medium=web2x&context=3">
+                this Reddit thread
+            </a>
+        </p>
+        
+        <p><b>Inflation</b></p>
+
+        <p>Rewrite the whole program using only 4 built-in functions: <code>exec</code>, <code>eval</code>,
+            <code>str</code>, <code>all</code>, with <code>()</code>, <code>[]</code>, and <code>+</code></p>
+
+        <p>Numbers:</p>
+        <pre><code>0 == all([[]])  # this equals False
+1 == all([])  # this equals True
+2 == all([]) + all([])
+3 == all([]) + all([]) + all([])
+...</code></pre>
+
+        <p>Once we get the numbers down, we can use them to access any index of a string to obtain any character.</p>
+        <pre><code>
+"l" == str(str)[2]    # str(str)  == "&lt;class 'str'>"
+"o" == str(eval)[16]  # str(eval) == "&lt;built-in function eval>"
+"b" == str(eval)[1]   # str(eval) == "&lt;built-in function eval>"
+...</code></pre>
+
+        <p>This way, we are able to get 17 characters.
+            With these 17 chars, we can write <code>exec("from string import printable as b")</code></p>
+
+        <p>Finally, we can represent any printable by evaluating <code>eval("b[idx]")</code></p>
+    </details>
+
+    <script>
+        const PYOBFUSINATOR_CODE = `__PYOBFUSINATOR_CODE_PLACEHOLDER__`;
+        let pyobfusinatorLoaded = false;
+
+        loadPyodide()
+            .then(pyodide => {
+                window.pyodide = pyodide
+                try {
+                    pyodide.runPython(PYOBFUSINATOR_CODE)
+                    pyodide.runPython(`
+inputCodeFromJS = methodFromJS = None
+def obfuscate():
+    global inputCodeFromJS, methodFromJS
+    method = eval(methodFromJS)
+    return method(inputCodeFromJS)
+`)
+                    pyobfusinatorLoaded = true
+                } catch (e) {
+                    console.error(e)
+                }
+            })
+            .finally(() => {
+                document.getElementById("loading").classList.add("done")
+            })
+
+        const inputEditor = ace.edit("input-code");
+        inputEditor.setTheme("ace/theme/tomorrow");
+        inputEditor.session.setMode("ace/mode/python");
+
+        const outputEditor = ace.edit("output-code");
+        outputEditor.setTheme("ace/theme/tomorrow");
+        outputEditor.session.setMode("ace/mode/python");
+        outputEditor.setReadOnly(true);
+
+        function obfuscate() {
+            if (!pyobfusinatorLoaded) {
+                return
+            }
+
+            const inputCode = inputEditor.getValue();
+            const method = document.getElementById("inflate-method").checked ? "inflate" : "unicode_compress";
+            pyodide.globals.set("inputCodeFromJS", inputCode)
+            pyodide.globals.set("methodFromJS", method)
+
+            try {
+                const output = pyodide.runPython(`obfuscate()`)
+                outputEditor.setValue(output)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        function copy() {
+            const value = outputEditor.getValue()
+            navigator.clipboard.writeText(value)
+            const copyBtn = document.getElementById("copy")
+            copyBtn.textContent = "Copied!"
+            setTimeout(() => copyBtn.textContent = "Copy output", 1000)
+        }
+
+        document.getElementById("go").addEventListener("click", obfuscate)
+        document.getElementById("copy").addEventListener("click", copy)
+    </script>
+</main>
+
+</body>
+</html>

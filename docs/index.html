@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Primary Meta Tags -->
+    <meta charset="UTF-8">
+    <title>SQSS - Structured Query Style Sheet</title>
+    <meta name="title" content="SQSS - Structured Query Style Sheet">
+    <meta name="description" content="Style your HTML with some good old SQL!">
+    <meta name="author" content="dthung1602">
+    <meta name="keywords" content="sql, css, transpiler, sqss, style, html">
+    <meta name="robots" content="index, follow"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dthung1602.github.io/sqss/">
+    <meta property="og:title" content="SQSS - Structured Query Style Sheet">
+    <meta property="og:description" content="Style your HTML with some good old SQL!">
+    <meta property="og:image" content="img/logo-social.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://dthung1602.github.io/sqss/">
+    <meta property="twitter:title" content="SQSS - Structured Query Style Sheet">
+    <meta property="twitter:description" content="Style your HTML with some good old SQL!">
+    <meta property="twitter:image" content="img/logo-social.png">
+
+    <!--  Stylesheets & js  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./normalize.css">
+    <link rel="stylesheet" href="./skeleton.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.10.0/ace.js"
+            integrity="sha512-7s3F2rOCm3IxjF8NjYsmlhE8gNOiaj2i9Uq6MZch73ApkLH2/iuoB7q3Z4NFiS8GTmRhyHKSKulosEgwDZf2Iw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.1/full/pyodide.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+<a id="icon-github" href="https://github.com/dthung1602/pyobfusinator"></a>
+
+<main class="container">
+
+    <div class="header">
+        <h1>PyObfusinator</h1>
+        <h4>A Python obfuscator code golf</h4>
+    </div>
+
+    <div>
+        <label for="input-code">Python code</label>
+        <div id="input-code" class="u-full-width">print("Hello World")
+        </div>
+    </div>
+    <div id="method-selector">
+        <label>
+            <span>Obfuscation method</span>
+            <input type="radio" name="method" id="inflate-method" value="inflate" checked>
+            <span class="label-body">Inflate</span>
+            <input type="radio" name="method" id="compress-method" value="compress">
+            <span class="label-body">Compress</span>
+
+            <button id="go" class="button-primary">Go!</button>
+            <button id="copy">Copy output</button>
+        </label>
+    </div>
+    <div>
+        <label for="output-code">Obfuscated code</label>
+        <div id="output-code" class="u-full-width"></div>
+    </div>
+
+    <div id="loading">
+        <img class="swing" src="python-logo.png" alt="">
+        <h5><i>Loading ...</i></h5>
+    </div>
+
+    <details id="explanation">
+        <summary><h4>How does it work?</h4></summary>
+
+        <p><b>Compression</b></p>
+
+        <p>"Compress" the code with unicode zalgo magic</p>
+        <p>Idea and implementation from
+            <a href="https://www.reddit.com/r/ProgrammerHumor/comments/yqof9f/comment/ivrd9ur/?utm_source=share&utm_medium=web2x&context=3">
+                this Reddit thread
+            </a>
+        </p>
+        
+        <p><b>Inflation</b></p>
+
+        <p>Rewrite the whole program using only 4 built-in functions: <code>exec</code>, <code>eval</code>,
+            <code>str</code>, <code>all</code>, with <code>()</code>, <code>[]</code>, and <code>+</code></p>
+
+        <p>Numbers:</p>
+        <pre><code>0 == all([[]])  # this equals False
+1 == all([])  # this equals True
+2 == all([]) + all([])
+3 == all([]) + all([]) + all([])
+...</code></pre>
+
+        <p>Once we get the numbers down, we can use them to access any index of a string to obtain any character.</p>
+        <pre><code>
+"l" == str(str)[2]    # str(str)  == "&lt;class 'str'>"
+"o" == str(eval)[16]  # str(eval) == "&lt;built-in function eval>"
+"b" == str(eval)[1]   # str(eval) == "&lt;built-in function eval>"
+...</code></pre>
+
+        <p>This way, we are able to get 17 characters.
+            With these 17 chars, we can write <code>exec("from string import printable as b")</code></p>
+
+        <p>Finally, we can represent any printable by evaluating <code>eval("b[idx]")</code></p>
+    </details>
+
+    <script>
+        const PYOBFUSINATOR_CODE = `UNKNOWN_CHAR_MAP = {
+    0: "Null (\\\\0)",
+    1: "SOH",
+    2: "STX",
+    3: "ETX",
+    4: "EOT",
+    5: "ENQ",
+    6: "ACK",
+    7: "BEL",
+    8: "Backspace (\\\\b)",
+    9: "Tab (\\\\t) (Did you mean to indent with spaces?)",
+    11: "Vertical Tab (\\\\v)",
+    12: "Form Feed (\\\\f)",
+    14: "SO",
+    15: "SI",
+    16: "DLE",
+    17: "DC1",
+    18: "DC2",
+    19: "DC3",
+    20: "DC4",
+    21: "NAK",
+    22: "SYN",
+    23: "ETB",
+    24: "CAN",
+    25: "EM",
+    26: "SUB",
+    27: "ESC",
+    28: "FS",
+    29: "GS",
+    30: "RS",
+    31: "US",
+    127: "DEL",
+}
+
+
+class UnknownCharacterException(ValueError):
+    def __init__(self, character: int, line: int) -> None:
+        if character < 128:
+            descriptor = (
+                UNKNOWN_CHAR_MAP[character]
+                if character in UNKNOWN_CHAR_MAP
+                else f"ASCII {character}"
+            )
+            super().__init__(f"Line {line}: Cannot encode {descriptor} character.")
+        else:
+            super().__init__(
+                f"Line {line}: Attempt to encode UTF8 character sequence. "
+                f"Pyobfusinator only can encode ascii non-control characters and newlines"
+            )
+from string import printable
+
+
+
+__all__ = ["inflate", "deflate"]
+
+
+def inflate(input_code: str) -> str:
+    if '"""' in input_code:
+        raise ValueError("pyobfusinator doesn't support \\"\\"\\" yet, use ''' instead")
+
+    output_code = generate_boilerplate()
+
+    char_expressions = []
+    line = 0
+    for c in input_code:
+        if c == "\\n":
+            line += 1
+        try:
+            char_expressions.append(char_to_expr(c))
+        except ValueError:
+            raise UnknownCharacterException(ord(c), line)
+
+    output_code += f"exec({'+'.join(char_expressions)})\\n"
+
+    output_code = replace_number(output_code)
+
+    return output_code
+
+
+def deflate(output_code: str) -> str:
+    output_code = un_replace_number(output_code)
+
+    boilerplate = generate_boilerplate() + "exec("
+    if not (output_code.startswith(boilerplate) and output_code.endswith(")\\n")):
+        raise ValueError(
+            "This code was not obfuscated by pyobfusinator. Cannot deflate."
+        )
+    output_code = output_code[len(boilerplate) : -2]
+
+    expressions = split_expression(output_code)
+    chars = [expr_to_char(e) for e in expressions]
+
+    return "".join(chars)
+
+
+def split_expression(s: str) -> list[str]:
+    stack = 0
+    result = []
+    begin_exp_idx = 0
+
+    for idx, c in enumerate(s):
+        if c == "+":
+            if stack == 0:
+                result.append(s[begin_exp_idx:idx])
+                begin_exp_idx = idx + 1
+        elif c == "(":
+            stack += 1
+        elif c == ")":
+            stack -= 1
+
+    result.append(s[begin_exp_idx:])
+    return result
+
+
+SHORT_MAPPING = {
+    "l": "str(str)[2]",
+    "o": "str(eval)[16]",
+    "c": "str(str)[1]",
+    "a": "str(str)[3]",
+    "s": "str(str)[4]",
+    "i": "str(eval)[3]",
+    "e": "str(eval)[19]",
+    "b": "str(eval)[1]",
+    "t": "str(eval)[5]",
+    "f": "str(eval)[10]",
+    "n": "str(eval)[8]",
+    "r": "str(str)[10]",
+    "(": "str(())[0]",
+    ")": "str(())[1]",
+    " ": "str(str)[6]",
+    "[": "str([])[0]",
+    "]": "str([])[1]",
+}
+
+REVERSE_SHORT_MAPPING = {v: k for k, v in SHORT_MAPPING.items()}
+
+
+def generate_boilerplate():
+    """
+    Execute \`from string import printable as b\`
+    The SHORT_MAPPING provides almost every letter we need for the above import string, except for letter m p g
+    These characters can be extracted from str(locals())
+    """
+
+    return (
+        "exec(str(eval)[10]+str(str)[10]+str(eval)[16]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)["
+        "3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(str)[6]+str(str)[4]+str(eval)[5]+str(str)["
+        "10]+str(eval)[3]+str(eval)[8]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str("
+        "str)[4]+str(())[0]+str(())[1]))[50]+str(str)[6]+str(eval)[3]+str(eval(str(str)[2]+str(eval)[16]+str(str)["
+        "1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[6]+str(eval(str(str)[2]+str(eval)[16]+str("
+        "str)[1]+str(str)[3]+str(str)[2]+str(str)[4]+str(())[0]+str(())[1]))[45]+str(eval)[16]+str(str)[10]+str("
+        "eval)[5]+str(str)[6]+str(eval(str(str)[2]+str(eval)[16]+str(str)[1]+str(str)[3]+str(str)[2]+str(str)["
+        "4]+str(())[0]+str(())[1]))[45]+str(str)[10]+str(eval)[3]+str(eval)[8]+str(eval)[5]+str(str)[3]+str(eval)["
+        "1]+str(str)[2]+str(eval)[19]+str(str)[6]+str(str)[3]+str(str)[4]+str(str)[6]+str(eval)[1])\\n"
+    )
+
+
+CHAR_FORMAT_PREFIX = "eval(str(eval)[1]+str([])[0]+str("
+CHAR_FORMAT_SUFFIX = ")+str([])[1])"
+
+
+def char_to_expr(ch: str) -> str:
+    if ch in SHORT_MAPPING:
+        return SHORT_MAPPING[ch]
+    idx = printable.index(ch)
+    if idx == -1:
+        raise ValueError
+    return f"{CHAR_FORMAT_PREFIX}{idx}{CHAR_FORMAT_SUFFIX}"
+
+
+def expr_to_char(expression: str) -> str:
+    if expression in REVERSE_SHORT_MAPPING:
+        return REVERSE_SHORT_MAPPING[expression]
+
+    try:
+        if not (
+            expression.startswith(CHAR_FORMAT_PREFIX)
+            and expression.endswith(CHAR_FORMAT_SUFFIX)
+        ):
+            raise
+        idx = expression.removeprefix(CHAR_FORMAT_PREFIX).removesuffix(
+            CHAR_FORMAT_SUFFIX
+        )
+        return printable[int(idx)]
+    except Exception:
+        raise ValueError(f"Cannot decompile expression '{expression}'")
+
+
+def replace_number(code: str):
+    for n in reversed(range(len(printable))):
+        code = code.replace(str(n), convert_num(n))
+    return code
+
+
+def un_replace_number(code: str):
+    for n in reversed(range(len(printable))):
+        code = code.replace(convert_num(n), str(n))
+    return code
+
+
+def convert_num(n: int):
+    if n == 0:
+        return "all([[]])"
+    return "+".join(["all([])"] * n)
+"""
+Original idea https://github.com/DaCoolOne/DumbIdeas/tree/main/reddit_ph_compressor
+Release under MIT license
+"""
+
+import warnings
+
+
+__all__ = ["unicode_compress", "unicode_decompress"]
+
+
+def unicode_compress(input_code: str) -> str:
+    if "\\t" in input_code:
+        warnings.warn(
+            "Code cannot contain tabs. Converting each tab to 4 spaces.", stacklevel=2
+        )
+        input_code = input_code.replace("\\t", "    ")
+
+    o = bytearray(b"E")
+    line = 1
+    for c in input_code.encode("utf-8"):
+        # Skip carriage returns
+        # This should be done by Python in the file read, but just in case this gets called elsewhere
+        if c == 13:
+            warnings.warn("Non-unix line endings detected", stacklevel=2)
+            continue
+
+        # Newlines increase line count (For error message).
+        if c == 10:
+            line += 1
+
+        # Check for invalid code points
+        if (c < 32 or c > 126) and c != 10:
+            raise UnknownCharacterException(c, line)
+
+        # Code point translation
+        v = (c - 11) % 133 - 21
+        o += ((v >> 6) & 1 | 0b11001100).to_bytes(1, "big")
+        o += ((v & 63) | 0b10000000).to_bytes(1, "big")
+
+    return (
+        b"b='"
+        + o
+        + b"'.encode();exec(''.join(chr(((h<<6&64|c&63)+22)%133+10)for h,c in zip(b[1::2],b[2::2])))"
+    ).decode("utf-8")
+
+
+def unicode_decompress(s: str) -> str:
+    b = s.encode("utf-8")
+    return "".join(
+        [
+            chr(((h << 6 & 64 | c & 63) + 22) % 133 + 10)
+            for h, c in zip(b[1::2], b[2::2])
+        ]
+    )
+`;
+        let pyobfusinatorLoaded = false;
+
+        loadPyodide()
+            .then(pyodide => {
+                window.pyodide = pyodide
+                try {
+                    pyodide.runPython(PYOBFUSINATOR_CODE)
+                    pyodide.runPython(`
+inputCodeFromJS = methodFromJS = None
+def obfuscate():
+    global inputCodeFromJS, methodFromJS
+    method = eval(methodFromJS)
+    return method(inputCodeFromJS)
+`)
+                    pyobfusinatorLoaded = true
+                } catch (e) {
+                    console.error(e)
+                }
+            })
+            .finally(() => {
+                document.getElementById("loading").classList.add("done")
+            })
+
+        const inputEditor = ace.edit("input-code");
+        inputEditor.setTheme("ace/theme/tomorrow");
+        inputEditor.session.setMode("ace/mode/python");
+
+        const outputEditor = ace.edit("output-code");
+        outputEditor.setTheme("ace/theme/tomorrow");
+        outputEditor.session.setMode("ace/mode/python");
+        outputEditor.setReadOnly(true);
+
+        function obfuscate() {
+            if (!pyobfusinatorLoaded) {
+                return
+            }
+
+            const inputCode = inputEditor.getValue();
+            const method = document.getElementById("inflate-method").checked ? "inflate" : "unicode_compress";
+            pyodide.globals.set("inputCodeFromJS", inputCode)
+            pyodide.globals.set("methodFromJS", method)
+
+            try {
+                const output = pyodide.runPython(`obfuscate()`)
+                outputEditor.setValue(output)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        function copy() {
+            const value = outputEditor.getValue()
+            navigator.clipboard.writeText(value)
+            const copyBtn = document.getElementById("copy")
+            copyBtn.textContent = "Copied!"
+            setTimeout(() => copyBtn.textContent = "Copy output", 1000)
+        }
+
+        document.getElementById("go").addEventListener("click", obfuscate)
+        document.getElementById("copy").addEventListener("click", copy)
+    </script>
+</main>
+
+</body>
+</html>

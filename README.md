@@ -82,7 +82,7 @@ original_text = unicode_decompress(compressed_text)  # print('hello world')
 Numbers:
 
 ```python
-0 == all([[]])
+0 == all([[]])  # this equals False
 1 == all([])  # this equals True
 2 == all([]) + all([])
 3 == all([]) + all([]) + all([])
@@ -98,13 +98,13 @@ Once we get the numbers down, we can use them to access any index of a string to
 ...
 ```
 
-This way, we are able to get 17 characters. With this 17 chars, we can write `exec("from string import printable as b")`
+This way, we are able to get 17 characters. With these 17 chars, we can write `exec("from string import printable as b")`
 
 Finally, we can represent any printable by evaluating `eval("b[idx]")`
 
 ### Unicode zalgo magic
 
 Idea and implementation from [DaCoolOne](https://github.com/DaCoolOne/DumbIdeas/blob/main/reddit_ph_compressor/out.py) reddit comment.
-[Link](https://www.reddit.com/r/ProgrammerHumor/comments/yqof9f/comment/ivrd9ur/?utm_source=share&utm_medium=web2x&context=3)
+[Link]()
 
 I love it so much that I include it here

@@ -9,7 +9,7 @@ from .exception import UnknownCharacterException
 __all__ = ["unicode_compress", "unicode_decompress"]
 
 
-def unicode_compress(input_code: str) -> bytes:
+def unicode_compress(input_code: str) -> str:
     if "\t" in input_code:
         warnings.warn(
             "Code cannot contain tabs. Converting each tab to 4 spaces.", stacklevel=2
@@ -42,10 +42,11 @@ def unicode_compress(input_code: str) -> bytes:
         b"b='"
         + o
         + b"'.encode();exec(''.join(chr(((h<<6&64|c&63)+22)%133+10)for h,c in zip(b[1::2],b[2::2])))"
-    )
+    ).decode("utf-8")
 
 
-def unicode_decompress(b: bytes) -> str:
+def unicode_decompress(s: str) -> str:
+    b = s.encode("utf-8")
     return "".join(
         [
             chr(((h << 6 & 64 | c & 63) + 22) % 133 + 10)

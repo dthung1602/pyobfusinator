@@ -1,0 +1,115 @@
+.header {
+    text-align: center;
+    z-index: 200;
+    position: relative;
+}
+
+#input-code, #output-code {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #33C3F0;
+}
+
+#input-code {
+    height: 250px;
+}
+
+#output-code {
+    height: 75px;
+}
+
+#method-selector {
+    margin-top: 8px;
+}
+
+#method-selector span {
+    margin-right: 16px;
+}
+
+#go, #copy {
+    float: right;
+    margin-top: -4px;
+    margin-left: 16px;
+}
+
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background: #fbfbfc;
+    z-index: 100;
+}
+
+#loading.done {
+    display: none;
+}
+
+.swing {
+    animation: swing ease-in-out 0.75s infinite alternate;
+    transform-origin: center -20px;
+    float:left;
+    width: 250px;
+}
+
+@keyframes swing {
+    0% { transform: rotate(10deg); }
+    100% { transform: rotate(-10deg); }
+}
+
+#explanation {
+    margin-top: 40px;
+}
+
+#explanation h4 {
+    text-align: center;
+    cursor: pointer;
+}
+
+#explanation h4:hover {
+    color: #33C3F0;
+}
+
+body {
+    position: relative;
+    padding: 80px 0;
+}
+
+body::before, body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+body::before {
+    border-width: 40px;
+    border-right-color: #33C3F0;
+    border-top-color: #33C3F0;
+}
+
+#icon-github {
+    display: block;
+    background: url("icon-github.svg") no-repeat;
+    background-position-x: right;
+    background-position-y: top;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: all ease 0.5s;
+}
+
+#icon-github:hover {
+    transform: rotate(45deg);
+}
+
