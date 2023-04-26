@@ -1,7 +1,4 @@
-
-<div style="text-align: center">
-   <img src="docs/img-social.png" width="75%" style="border-radius: 8px">
-</div>
+<img src="docs/img-social.png" width="100%" style="border-radius: 8px">
 
 ## What is this?
 
