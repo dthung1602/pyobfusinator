@@ -15,7 +15,7 @@
 }
 
 #output-code {
-    height: 75px;
+    height: 120px;
 }
 
 #method-selector {
@@ -67,12 +67,12 @@
     margin-top: 40px;
 }
 
-#explanation h4 {
+#explanation h5 {
     text-align: center;
     cursor: pointer;
 }
 
-#explanation h4:hover {
+#explanation h5:hover {
     color: #33C3F0;
 }
 

@@ -3,30 +3,30 @@
 <head>
     <!-- Primary Meta Tags -->
     <meta charset="UTF-8">
-    <title>SQSS - Structured Query Style Sheet</title>
-    <meta name="title" content="SQSS - Structured Query Style Sheet">
-    <meta name="description" content="Style your HTML with some good old SQL!">
+    <title>PyObfusinator</title>
+    <meta name="title" content="PyObfusinator">
+    <meta name="description" content="A Python obfuscator code golf">
     <meta name="author" content="dthung1602">
-    <meta name="keywords" content="sql, css, transpiler, sqss, style, html">
+    <meta name="keywords" content="python3, code-golf, obfuscator, zalgo-text, builtin-functions">
     <meta name="robots" content="index, follow"/>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dthung1602.github.io/sqss/">
-    <meta property="og:title" content="SQSS - Structured Query Style Sheet">
-    <meta property="og:description" content="Style your HTML with some good old SQL!">
-    <meta property="og:image" content="img/logo-social.png">
+    <meta property="og:url" content="https://dthung1602.github.io/pyobfusinator/">
+    <meta property="og:title" content="PyObfusinator">
+    <meta property="og:description" content="A Python obfuscator code golf">
+    <meta property="og:image" content="img-social.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://dthung1602.github.io/sqss/">
-    <meta property="twitter:title" content="SQSS - Structured Query Style Sheet">
-    <meta property="twitter:description" content="Style your HTML with some good old SQL!">
-    <meta property="twitter:image" content="img/logo-social.png">
+    <meta property="twitter:url" content="https://dthung1602.github.io/pyobfusinator/">
+    <meta property="twitter:title" content="PyObfusinator">
+    <meta property="twitter:description" content="A Python obfuscator code golf">
+    <meta property="twitter:image" content="img-social.png">
 
     <!--  Stylesheets & js  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./normalize.css">
     <link rel="stylesheet" href="./skeleton.css">
@@ -54,7 +54,8 @@
     <div>
         <label for="input-code">Python code</label>
         <div id="input-code" class="u-full-width">print("Hello World")
-        </div>
+
+</div>
     </div>
     <div id="method-selector">
         <label>
@@ -79,7 +80,7 @@
     </div>
 
     <details id="explanation">
-        <summary><h4>How does it work?</h4></summary>
+        <summary><h5>» How does it work? «</h5></summary>
 
         <p><b>Compression</b></p>
 
@@ -112,7 +113,7 @@
         <p>This way, we are able to get 17 characters.
             With these 17 chars, we can write <code>exec("from string import printable as b")</code></p>
 
-        <p>Finally, we can represent any printable by evaluating <code>eval("b[idx]")</code></p>
+        <p>Finally, we can represent any printable character by accessing its index: <code>b[idx]</code></p>
     </details>
 
     <script>
@@ -400,10 +401,12 @@ def obfuscate():
             })
 
         const inputEditor = ace.edit("input-code");
+        inputEditor.setOptions({fontSize: "14pt"});
         inputEditor.setTheme("ace/theme/tomorrow");
         inputEditor.session.setMode("ace/mode/python");
 
         const outputEditor = ace.edit("output-code");
+        outputEditor.setOptions({fontSize: "14pt"});
         outputEditor.setTheme("ace/theme/tomorrow");
         outputEditor.session.setMode("ace/mode/python");
         outputEditor.setReadOnly(true);

@@ -1,6 +1,11 @@
-# PyObfusinator
 
-Another Python obfuscator, written as a code golf
+<div style="text-align: center">
+   <img src="docs/img-social.png" width="75%" style="border-radius: 8px">
+</div>
+
+## What is this?
+
+Just another Python code obfuscator
 
 ## Feature
 
@@ -100,7 +105,7 @@ Once we get the numbers down, we can use them to access any index of a string to
 
 This way, we are able to get 17 characters. With these 17 chars, we can write `exec("from string import printable as b")`
 
-Finally, we can represent any printable by evaluating `eval("b[idx]")`
+Finally, we can represent any printable character by accessing its index: b\[idx]
 
 ### Unicode zalgo magic
 
